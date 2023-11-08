@@ -1,8 +1,11 @@
-import CloseIcon from "./CloseIcon";
-import MaximizeIcon from './MaximizeIcon';
-import MinimizeIcon from './MinimizeIcon';
-import RestoreIcon from './RestoreIcon';
+import WindowsCloseIcon from "./WindowsCloseIcon";
+import WindowsMaximizeIcon from './WindowsMaximizeIcon';
+import WindowsMinimizeIcon from './WindowsMinimizeIcon';
+import WindowsRestoreIcon from './WindowsRestoreIcon';
+import UbuntuClose from './UbuntuClose';
+import UbuntuMaximize from './UbuntuMaximize';
+import UbuntuMinimize from './UbuntuMinimize';
 
 export {
-    CloseIcon, MaximizeIcon, MinimizeIcon, RestoreIcon
+    WindowsCloseIcon, WindowsMaximizeIcon, WindowsMinimizeIcon, WindowsRestoreIcon, UbuntuClose, UbuntuMaximize, UbuntuMinimize
 }

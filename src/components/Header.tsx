@@ -1,6 +1,6 @@
 import { FunctionComponent, useEffect, useState } from "react";
 import { OSTYPE } from "../types";
-import { CloseIcon, MaximizeIcon, MinimizeIcon, RestoreIcon } from "../icons";
+import { UbuntuClose, UbuntuMaximize, UbuntuMinimize, WindowsCloseIcon, WindowsMaximizeIcon, WindowsMinimizeIcon, WindowsRestoreIcon } from "../icons";
 
 type HeaderProps = {
     set_OS_supported_state: (set_to: boolean) => void;
@@ -8,12 +8,14 @@ type HeaderProps = {
 
 const Header: FunctionComponent<HeaderProps> = (props: HeaderProps) => {
     const [ostype, setOSType] = useState<OSTYPE>(OSTYPE.null);
+    const [isMaximizedUbuntu, setisMaximizedUbuntu] = useState<boolean>(false);
 
     useEffect(() => {
         const minimizeID: HTMLElement | null = document.querySelector('.minimize-app-button');
         const maximizeID: HTMLElement | null = document.querySelector('.maximize-app-button');
         const restoreID: HTMLElement | null = document.querySelector('.restore-app-button');
         const closeID: HTMLElement | null = document.querySelector('.quit-app-button');
+        const ubuntuMU : HTMLElement | null = document.querySelector('.maximize-un-maximize-app-ubuntu');
 
         const checkOSType = async() => {
             const osType = window.gateway.osType;
@@ -26,7 +28,8 @@ const Header: FunctionComponent<HeaderProps> = (props: HeaderProps) => {
                 props.set_OS_supported_state(true);
             }
             else if(osType === OSTYPE.win32){
-                setOSType(OSTYPE.win32);
+                setOSType(OSTYPE.linux);
+                //setOSType(OSTYPE.win32);
                 props.set_OS_supported_state(true);
             }
             else {
@@ -56,6 +59,17 @@ const Header: FunctionComponent<HeaderProps> = (props: HeaderProps) => {
         const maximize = () => {window.gateway.maximizeWindow();}
         const restore = () => {window.gateway.restoreWindow();}
         const close = () => {window.gateway.closeWindow();}
+        const toggleMaximized = () => {
+            if(isMaximizedUbuntu === true){
+                console.log("here");
+                setisMaximizedUbuntu(false);
+                window.gateway.restoreWindow();
+            }
+            else{
+                setisMaximizedUbuntu(true);
+                window.gateway.maximizeWindow();
+            }
+        }
 
         checkOSType();
         window.addEventListener("resize", handleScreenResize);
@@ -63,6 +77,7 @@ const Header: FunctionComponent<HeaderProps> = (props: HeaderProps) => {
         if(maximizeID)maximizeID.addEventListener('click', maximize);
         if(restoreID)restoreID.addEventListener('click', restore);
         if(closeID)closeID.addEventListener('click', close);
+        if(ubuntuMU)ubuntuMU.addEventListener('click', toggleMaximized);
         
 
         return () => {
@@ -71,11 +86,12 @@ const Header: FunctionComponent<HeaderProps> = (props: HeaderProps) => {
             if(maximizeID)maximizeID.removeEventListener('click', maximize);
             if(restoreID)restoreID.removeEventListener('click', restore);
             if(closeID)closeID.removeEventListener('click', close);
+            if(ubuntuMU)ubuntuMU.addEventListener('click', toggleMaximized);
         };
     }, [])
     
     return (
-        <div className="w-100 h-[40px] flex justify-between header">
+        <div className={"w-100 h-[40px] flex justify-between header " + (ostype === OSTYPE.linux ? "bg-[#2C2C2C] border border-solid border-[#585858]" : "")}>
             {
                 ostype === OSTYPE.darwin ?
                 <div>
@@ -86,23 +102,31 @@ const Header: FunctionComponent<HeaderProps> = (props: HeaderProps) => {
             }
             {
                 ostype === OSTYPE.linux ?
-                <div>
-
+                <div className="flex w-[66px] h-[40px] mr-[12px] items-center overflow-hidden">
+                    <div className="w-[22px] h-[22px] flex items-center justify-center minimize-app-button hover:bg-[#dbdbdb62] active:bg-[#dbdbdb8a] rounded-full">
+                        <UbuntuMinimize />
+                    </div>
+                    <div className="w-[22px] h-[22px] flex items-center justify-center maximize-un-maximize-app-ubuntu hover:bg-[#dbdbdb62] active:bg-[#dbdbdb8a] rounded-full">
+                        <UbuntuMaximize />
+                    </div>
+                    <div className="w-[22px] h-[22px] flex items-center justify-center quit-app-button hover:bg-[#E95420] active:bg-[#ff7847] rounded-full">
+                        <UbuntuClose />
+                    </div>
                 </div>
                 : 
                 ostype === OSTYPE.win32 ?
                 <div className="flex w-[120px] h-[40px] overflow-hidden">
                     <div className="w-[40px] h-[40px] flex items-center justify-center minimize-app-button hover:bg-[#dbdbdb62] active:bg-[#dbdbdb8a] rounded-[15px]">
-                        <MinimizeIcon />
+                        <WindowsMinimizeIcon />
                     </div>
                     <div className="w-[40px] h-[40px] items-center justify-center restore-app-button hover:bg-[#dbdbdb62] active:bg-[#dbdbdb8a] rounded-[15px]">
-                        <RestoreIcon />
+                        <WindowsRestoreIcon />
                     </div>
                     <div className="w-[40px] h-[40px] items-center justify-center maximize-app-button hover:bg-[#dbdbdb62] active:bg-[#dbdbdb8a] rounded-[15px]">
-                        <MaximizeIcon />
+                        <WindowsMaximizeIcon />
                     </div>
                     <div className="w-[40px] h-[40px] flex items-center justify-center quit-app-button hover:bg-[#ff6868] active:bg-[red] rounded-[15px]">
-                        <CloseIcon />
+                        <WindowsCloseIcon />
                     </div>
                 </div>
                 :

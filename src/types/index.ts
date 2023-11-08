@@ -6,7 +6,7 @@ export interface userType{
 }
 
 export enum OSTYPE{
-    null= "null",
+    null = "null",
     aix = "aix",
     darwin = "darwin",
     freebsd = "freebsd",

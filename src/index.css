@@ -66,6 +66,11 @@ body{
     -webkit-app-region: drag;
 }
 
+.maximize-un-maximize-app-ubuntu{
+    app-region: no-drag;
+    -webkit-app-region: no-drag;
+}
+
 .quit-app-button, .minimize-app-button, .maximize-app-button, .restore-app-button{
     app-region: no-drag;
     -webkit-app-region: no-drag;
