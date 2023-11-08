@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: 'ubuntu_italic';
+    src: url('assets/fonts/Ubuntu/Ubuntu-Italic.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'ubuntu_light';
+    src: url('assets/fonts/Ubuntu/Ubuntu-Light.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'ubuntu_regular';
+    src: url('assets/fonts/Ubuntu/Ubuntu-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'ubuntu_medium';
+    src: url('assets/fonts/Ubuntu/Ubuntu-Medium.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'ubuntu_medium_italic';
+    src: url('assets/fonts/Ubuntu/Ubuntu-MediumItalic.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'ubuntu_bold_italic';
+    src: url('assets/fonts/Ubuntu/Ubuntu-BoldItalic.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'ubuntu_bold';
+    src: url('assets/fonts/Ubuntu/Ubuntu-Bold.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body{
+    font-family: 'ubuntu_regular', sans-serif;
+    background-color: #252525;
+    overflow: hidden;
+    min-width: 800px;
+    min-height: 600px;
+    width: 100vw;
+    height: 100vh;
+}
+
+.header{
+    app-region: drag;
+    -webkit-app-region: drag;
+}
+
+.quit-app-button, .minimize-app-button, .maximize-app-button, .restore-app-button{
+    app-region: no-drag;
+    -webkit-app-region: no-drag;
+}
+
+.restore-app-button{
+    display: none;
+}
+
+.maximize-app-button{
+    display: flex;
+}
