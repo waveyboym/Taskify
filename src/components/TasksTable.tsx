@@ -1,52 +1,75 @@
-import {useState, useMemo} from "react";
-import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Pagination, getKeyValue} from "@nextui-org/react";
-import { users } from "../content";
+import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell} from "@nextui-org/react";
+//import { users } from "../content";
+import Task from "./Task";
+import { taskType } from "../types";
+import { useEffect, useState } from "react";
+
+const columns = [
+    {
+        key: "Sun 11",
+        label: "Sun 11"
+    },
+    {
+        key: "Mon 12",
+        label: "Mon 12"
+    },
+    {
+        key: "Tue 13",
+        label: "Tue 13"
+    },
+    {
+        key: "Wed 14",
+        label: "Wed 14"
+    }
+]
+
+const row_keys = [
+    "0am", "1am", "2am", "3am", "4am", "5am", "6am", "7am", "8am", "9am", "10am", "11am", 
+    "12pm", "1pm", "2pm", "3pm", "4pm", "5pm", "6pm", "7pm", "8pm", "9pm", "10pm", "11pm"
+]
 
 const TasksTable = () => {
-    const [page, setPage] = useState(1);
-    const rowsPerPage = 4;
+    const [tasks, settasksState] = useState<taskType[]>([]);
+
+    function calculateCellIndex(row_index: number, cell_index: number){return ((row_index * 4) + cell_index);}
+
+    useEffect(() => {
+        const loadData = () => {
+            const res = JSON.parse(window.gateway.readData());
+            settasksState(res);
+        }
+
+        loadData();
+    }, [])
     
-    const pages = Math.ceil(users.length / rowsPerPage);
-    
-    const items = useMemo(() => {
-        const start = (page - 1) * rowsPerPage;
-        const end = start + rowsPerPage;
-    
-        return users.slice(start, end);
-    }, [page, users]);
 
     return (
-    <Table 
+    <Table hideHeader 
         aria-label="Example table with client side pagination"
-        bottomContent={
-        <div className="flex w-full justify-center">
-            <Pagination
-                isCompact
-                showControls
-                showShadow
-                color="secondary"
-                page={page}
-                total={pages}
-                onChange={(page) => setPage(page)}
-            />
-        </div>
-        }
-        classNames={{
-            wrapper: "min-h-[222px]",
-        }}
-        >
-        <TableHeader>
-            <TableColumn key="name">NAME</TableColumn>
-            <TableColumn key="role">ROLE</TableColumn>
-            <TableColumn key="status">STATUS</TableColumn>
-        </TableHeader>
-        <TableBody items={items}>
-            {(item) => (
-            <TableRow key={item.name}>
-                {(columnKey) => <TableCell>{getKeyValue(item, columnKey)}</TableCell>}
-            </TableRow>
-            )}
-        </TableBody>
+        classNames={{wrapper: "min-h-[222px]",}}>
+            <TableHeader>
+                {columns.map((column) =>
+                <TableColumn key={column.key}>{column.label}</TableColumn>
+                )}
+            </TableHeader>
+            <TableBody>
+                {row_keys.map((key_value, index) => 
+                    <TableRow key={key_value}>
+                        <TableCell>
+                            <Task status={tasks[calculateCellIndex(index, 0)].status} text={tasks[calculateCellIndex(index, 0)].text}/>
+                        </TableCell>
+                        <TableCell>
+                            <Task status={tasks[calculateCellIndex(index, 1)].status} text={tasks[calculateCellIndex(index, 1)].text}/>
+                        </TableCell>
+                        <TableCell>
+                            <Task status={tasks[calculateCellIndex(index, 2)].status} text={tasks[calculateCellIndex(index, 2)].text}/>
+                        </TableCell>
+                        <TableCell>
+                            <Task status={tasks[calculateCellIndex(index, 3)].status} text={tasks[calculateCellIndex(index, 3)].text}/>
+                        </TableCell>
+                    </TableRow>
+                )}
+            </TableBody>
         </Table>
     );
 }

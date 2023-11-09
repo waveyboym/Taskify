@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Header, TasksTable } from "./components";
+import { Header, TableContainer } from "./components";
 
 const App = () => {
   const [isSupportedOS, setIsSupportedOS] = useState<boolean>(false);
@@ -13,7 +13,7 @@ const App = () => {
       <Header set_OS_supported_state={set_OS_supported_state} />
       {
         isSupportedOS === true ?
-          <TasksTable />
+          <TableContainer />
           :
           <div>This os: {window.gateway.osType} is not supported</div>
       }

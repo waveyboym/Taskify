@@ -1,5 +1,7 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'node:path';
+import fs from 'node:fs';
+import { taskType } from '../src/types';
 
 // The built directory structure
 //
@@ -12,6 +14,7 @@ import path from 'node:path';
 // │
 process.env.DIST = path.join(__dirname, '../dist')
 process.env.VITE_PUBLIC = app.isPackaged ? process.env.DIST : path.join(process.env.DIST, '../public')
+const filePath = path.join(process.env.DIST, '../src/content/data.json')
 
 
 let win: BrowserWindow | null
@@ -24,10 +27,10 @@ function createWindow() {
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     },
-    width: 900,
+    width: 958,
     height: 600,
     minHeight: 600,
-    minWidth: 900,
+    minWidth: 958,
     frame: false,
   })
 
@@ -82,11 +85,35 @@ app.on('activate', () => {
   }
 })
 
+function saveData(_event: Electron.IpcMainEvent, data: taskType[]) {
+  const text = JSON.stringify(data);
+  fs.writeFile(filePath, text, err => {
+    if(err){
+      console.error(err);
+    }
+  })
+}
+
+async function readData(){
+  fs.readFile(filePath, 'utf8', (err, data) => {
+      if (err) {
+          console.error(err);
+          return "error";
+      }
+      const parsed_data = JSON.parse(data);
+      // handle the json data here
+      console.log(parsed_data);
+      return parsed_data;
+  });
+}
+
 app.whenReady().then(() =>{
   ipcMain.on('minimize-window', minimizeWindow);
   ipcMain.on('maximize-window', maximizeWindow);
   ipcMain.on('restore-window', restoreWindow);
   ipcMain.on('close-window', closeWindow);
   ipcMain.handle('is-window-maximized', isWindowMaximized);
+  ipcMain.on('save-data', saveData);
+  ipcMain.handle('read-data', readData);
   createWindow();
 })

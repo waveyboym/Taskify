@@ -1,8 +1,7 @@
-export interface userType{
-    key: string;
-    name: string;
-    role: string;
-    status: string;
+export interface taskType{
+    status: OSTYPE;
+    text: string;
+    time: Date;
 }
 
 export enum OSTYPE{
@@ -15,4 +14,11 @@ export enum OSTYPE{
     sunos = "sunos",
     win32 = "win32",
     android = "android"
+}
+
+export enum TASKTYPE{
+    null = "null",
+    incomplete = "incomplete",
+    complete = "complete",
+    hold = "hold"
 }
