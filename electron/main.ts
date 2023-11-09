@@ -63,7 +63,7 @@ function closeWindow(){
   win?.close();
 }
 
-async function isWindowMaximized(){
+function isWindowMaximized(){
   return win?.isMaximized();
 }
 
@@ -94,17 +94,9 @@ function saveData(_event: Electron.IpcMainEvent, data: taskType[]) {
   })
 }
 
-async function readData(){
-  fs.readFile(filePath, 'utf8', (err, data) => {
-      if (err) {
-          console.error(err);
-          return "error";
-      }
-      const parsed_data = JSON.parse(data);
-      // handle the json data here
-      console.log(parsed_data);
-      return parsed_data;
-  });
+function readData(){
+  const res: string = fs.readFileSync(filePath, 'utf8');
+  return res;
 }
 
 app.whenReady().then(() =>{

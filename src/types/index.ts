@@ -1,5 +1,5 @@
 export interface taskType{
-    status: OSTYPE;
+    status: TASKTYPE;
     text: string;
     time: Date;
 }
@@ -21,4 +21,10 @@ export enum TASKTYPE{
     incomplete = "incomplete",
     complete = "complete",
     hold = "hold"
+}
+
+export interface TasksState {
+    tasks: taskType[];
+    overwriteTask: (row_index: number, cell_index: number, data: taskType) => void;
+    setTasks: (set_to: taskType[]) => void;
 }
