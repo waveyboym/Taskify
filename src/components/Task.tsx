@@ -14,7 +14,7 @@ const Task: FunctionComponent<TaskProps> = (props: TaskProps) => {
         <div>
             {
                 props.task.status === TASKTYPE.null ? 
-                    <Card className="w-[190px] h-[100px] rounded-[30px]" isPressable onPress={() => props.overWriteThisTask(props.row_index, props.cell_index, props.task)}>
+                    <Card className="w-[190px] h-[100px] rounded-[30px] mr-auto ml-auto" isPressable onPress={() => props.overWriteThisTask(props.row_index, props.cell_index, props.task)}>
                         <CardHeader className="flex gap-3">
                             <Chip color="default" variant="faded">no task</Chip>
                         </CardHeader>
@@ -23,7 +23,12 @@ const Task: FunctionComponent<TaskProps> = (props: TaskProps) => {
                         </CardBody>
                     </Card>
                 :
-                <Card className="w-[190px] h-[100px] rounded-[30px]" isPressable>
+                <Card 
+                    className={"w-[190px] h-[100px] rounded-[30px] mr-auto ml-auto " + 
+                        (props.task.status === TASKTYPE.complete ? "bg-[#0E793C]"
+                        : props.task.status === TASKTYPE.incomplete ? "bg-[#9353D3]"
+                        : "bg-[#C4841D]") }
+                    isPressable onPress={() => props.overWriteThisTask(props.row_index, props.cell_index, props.task)}>
                     <CardHeader className="flex gap-3">
                         {
                             props.task.status === TASKTYPE.incomplete ?
@@ -36,7 +41,7 @@ const Task: FunctionComponent<TaskProps> = (props: TaskProps) => {
                         }
                     </CardHeader>
                     <CardBody>
-                        <p>{props.task.status}</p>
+                        <p>{props.task.text}</p>
                     </CardBody>
                 </Card>
         }

@@ -51,11 +51,37 @@
     font-style: normal;
 }
 
+::-webkit-scrollbar {width: 7px;}
+
+/* Track */
+::-webkit-scrollbar-track {
+  border-radius: 15px;
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #8D8D8D; 
+  border-radius: 15px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {background: #a8a8a8;}
+
+::-webkit-scrollbar:hover {width: 7px;}
+
+::-webkit-scrollbar:active {width: 7px;}
+
+/* Handle on active */
+::-webkit-scrollbar-thumb:active {background: #cacaca;}
+
+
 body{
     font-family: 'ubuntu_regular', sans-serif;
     background-color: #252525;
     overflow: hidden;
-    min-width: 958px;
+    min-width: 961px;
     min-height: 600px;
     width: 100vw;
     height: 100vh;

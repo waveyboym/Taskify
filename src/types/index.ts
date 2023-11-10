@@ -1,7 +1,8 @@
 export interface taskType{
     status: TASKTYPE;
     text: string;
-    time: Date;
+    time: string;
+    send_notification: boolean;
 }
 
 export enum OSTYPE{
