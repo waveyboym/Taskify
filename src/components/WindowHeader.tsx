@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { WindowsMinimizeIcon, WindowsRestoreIcon, WindowsMaximizeIcon, WindowsCloseIcon } from "../icons"
+import { getJSONDate } from "../content";
 
 const WindowHeader = () => {
     useEffect(() => {
@@ -29,7 +30,16 @@ const WindowHeader = () => {
         const minimize = () => {window.gateway.minimizeWindow();}
         const maximize = () => {window.gateway.maximizeWindow();}
         const restore = () => {window.gateway.restoreWindow();}
-        const close = () => {window.gateway.closeWindow();}
+        const close = () => {
+            const string_tasks = localStorage.getItem('tasks-store');
+            const tasks = JSON.parse(string_tasks !== null ? string_tasks : "");
+            const json = {
+                last_date_edited: getJSONDate(0),
+                store: tasks.state.tasks
+            };
+            window.gateway.saveData(JSON.stringify(json));
+            window.gateway.closeWindow();
+        }
 
         window.addEventListener("resize", handleScreenResize);
         if(minimizeID)minimizeID.addEventListener('click', minimize);

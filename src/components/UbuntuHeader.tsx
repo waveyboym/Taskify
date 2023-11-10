@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { UbuntuMinimize, UbuntuMaximize, UbuntuClose } from "../icons"
+import { UbuntuMinimize, UbuntuMaximize, UbuntuClose } from "../icons";
+import { getJSONDate } from "../content";
 
 const UbuntuHeader = () => {
     const [isMaximizedUbuntu, setisMaximizedUbuntu] = useState<boolean>(false);
@@ -10,7 +11,16 @@ const UbuntuHeader = () => {
         const closeID: HTMLElement | null = document.querySelector('.quit-app-button');
     
         const minimize = () => {window.gateway.minimizeWindow();}
-        const close = () => {window.gateway.closeWindow();}
+        const close = () => {
+            const string_tasks = localStorage.getItem('tasks-store');
+            const tasks = JSON.parse(string_tasks !== null ? string_tasks : "");
+            const json = {
+                last_date_edited: getJSONDate(0),
+                store: tasks.state.tasks
+            };
+            window.gateway.saveData(JSON.stringify(json));
+            window.gateway.closeWindow();
+        }
         const toggleMaximized = () => {
             if(isMaximizedUbuntu === true){
                 setisMaximizedUbuntu(false);
@@ -26,7 +36,6 @@ const UbuntuHeader = () => {
         if(ubuntuMU)ubuntuMU.addEventListener('click', toggleMaximized);
         if(closeID)closeID.addEventListener('click', close);
         
-
         return () => {
             if(minimizeID)minimizeID.removeEventListener('click', minimize);
             if(ubuntuMU)ubuntuMU.addEventListener('click', toggleMaximized);

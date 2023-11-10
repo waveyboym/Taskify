@@ -4,7 +4,7 @@ import Task from "./Task";
 import { useEffect, useState } from "react";
 import { useTaskStore } from "../store";
 import { TASKTYPE, taskType } from "../types";
-import { selectStatus } from "../content";
+import { getJSONDate, selectStatus, tasksEmpty } from "../content";
 
 const columns = [
     {
@@ -39,7 +39,7 @@ interface co_ords{
 
 const TasksTable = () => {
     const {isOpen, onOpen, onOpenChange, onClose} = useDisclosure();
-    const [editingTask, setEditingTask] = useState<taskType>({ status: TASKTYPE.null, text: "", time: new Date().toUTCString(), send_notification: false});
+    const [editingTask, setEditingTask] = useState<taskType>({ status: TASKTYPE.null, text: "", time: getJSONDate(0), send_notification: false});
     const { tasks, overwriteTask, setTasks } = useTaskStore((state) => { return { tasks: state.tasks, overwriteTask: state.overwriteTask, setTasks: state.setTasks }; });
     const [coords, setCoords] = useState<co_ords>({row: 0, col: 0});
     
@@ -71,11 +71,42 @@ const TasksTable = () => {
         onClose();
     }
 
+    function getDifferenceInDays(date1: Date, date2: Date) {
+        const diffInMS: number = Math.abs(date2.getTime() - date1.getTime());
+        return Math.floor(diffInMS / (1000 * 60 * 60 * 24));
+    }
+
+    function initTasksData(parsed: any){
+        const now = new Date();
+        const last_edited_date = new Date(parsed.last_date_edited);
+        const days_passed = getDifferenceInDays(now, last_edited_date);
+        if(days_passed >= 4){
+            setTasks(tasksEmpty);
+        }
+        else{
+            const array_data: taskType[] = parsed.store;
+            for(let i = 0; i < days_passed; ++i){
+                //remove first element
+                array_data.shift();
+                //push null type last element
+                array_data.push({ status: TASKTYPE.null, text: "", time: getJSONDate(0), send_notification: false});
+                let skip_to = 3;
+                for(let j = 0; j < 24; ++j){
+                    //only modify the last column, so everything in index 3, 7, 11 and so on
+                    array_data[j + skip_to] = { status: TASKTYPE.null, text: "", time: getJSONDate(0), send_notification: false};
+                    skip_to += 3;
+                }
+            }
+            setTasks(array_data);
+        }
+    }
+
     useEffect(() => {
         const loadData = async() => {
+            setTasks(tasksEmpty);
             const res: string = await window.gateway.readData();
             const parsed = JSON.parse(res);
-            setTasks(parsed);
+            initTasksData(parsed);
         }
 
         loadData();
@@ -94,15 +125,19 @@ const TasksTable = () => {
                 <TableBody>
                     {row_keys.map((key_value, index) => 
                         <TableRow key={key_value}>
-                            {columns_num.map((column_value) => 
-                                    <TableCell key={calculateCellIndex(index, column_value)}>
-                                        <Task 
-                                            task={tasks[calculateCellIndex(index, column_value)]} 
-                                            row_index={index} 
-                                            cell_index={column_value} 
-                                            overWriteThisTask={overWriteThisTask}/>
-                                    </TableCell>
-                                )}
+                            {
+                                columns_num.map((column_value) => 
+                                        <TableCell key={calculateCellIndex(index, column_value)}>
+                                            {tasks.length === 96 ? 
+                                                <Task 
+                                                    task={tasks[calculateCellIndex(index, column_value)]} 
+                                                    row_index={index} 
+                                                    cell_index={column_value} 
+                                                    overWriteThisTask={overWriteThisTask}/>
+                                            : (<div />)}
+                                        </TableCell>
+                                    )
+                            }
                         </TableRow>
                     )}
                 </TableBody>

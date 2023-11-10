@@ -1,7 +1,6 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'node:path';
 import fs from 'node:fs';
-import { taskType } from '../src/types';
 
 // The built directory structure
 //
@@ -85,9 +84,8 @@ app.on('activate', () => {
   }
 })
 
-function saveData(_event: Electron.IpcMainEvent, data: taskType[]) {
-  const text = JSON.stringify(data);
-  fs.writeFile(filePath, text, err => {
+function saveData(_event: Electron.IpcMainEvent, data: string) {
+  fs.writeFile(filePath, data, err => {
     if(err){
       console.error(err);
     }

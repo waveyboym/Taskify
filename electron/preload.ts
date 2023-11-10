@@ -1,5 +1,4 @@
 import { contextBridge, ipcRenderer,  } from 'electron'
-import { taskType } from '../src/types'
 
 // --------- Expose some API to the Renderer process ---------
 contextBridge.exposeInMainWorld('ipcRenderer', withPrototype(ipcRenderer))
@@ -11,7 +10,7 @@ contextBridge.exposeInMainWorld('gateway', {
   restoreWindow: () => ipcRenderer.send('restore-window'),
   closeWindow: () => ipcRenderer.send('close-window'),
   isWindowMaximized: () => ipcRenderer.invoke('is-window-maximized'),
-  saveData: (data: taskType[]) => ipcRenderer.send('save-data', data),
+  saveData: (data: string) => ipcRenderer.send('save-data', data),
   readData: () => ipcRenderer.invoke('read-data'),
 })
 
