@@ -21,7 +21,21 @@ declare namespace NodeJS {
   }
 }
 
+export interface GateWayAPI {
+  osType: NodeJS.Platform,
+  minimizeWindow: () => void,
+  maximizeWindow: () => void,
+  restoreWindow: () => void,
+  closeWindow: () => void,
+  isWindowMaximized: () => Promise<any>,
+  saveData: (data: string) => void,
+  readData: () => Promise<any>
+}
+
 // Used in Renderer process, expose in `preload.ts`
-interface Window {
-  ipcRenderer: import('electron').IpcRenderer
+declare global {
+  interface Window {
+    ipcRenderer: import('electron').IpcRenderer,
+    gateway: GateWayAPI,
+  }
 }

@@ -4,38 +4,15 @@ import Task from "./Task";
 import { useEffect, useState } from "react";
 import { useTaskStore } from "../store";
 import { TASKTYPE, taskType } from "../types";
-import { getJSONDate, selectStatus, tasksEmpty } from "../content";
+import { getDateColumn, getJSONDate, selectStatus, tasksEmpty } from "../content";
 
-const columns = [
-    {
-        key: "Sun 11",
-        label: "Sun 11"
-    },
-    {
-        key: "Mon 12",
-        label: "Mon 12"
-    },
-    {
-        key: "Tue 13",
-        label: "Tue 13"
-    },
-    {
-        key: "Wed 14",
-        label: "Wed 14"
-    }
-]
+const columns = [getDateColumn(0),getDateColumn(1),getDateColumn(2),getDateColumn(3)]
 
 const columns_num = [0, 1, 2, 3]
 
-const row_keys = [
-    "0am", "1am", "2am", "3am", "4am", "5am", "6am", "7am", "8am", "9am", "10am", "11am", 
-    "12pm", "1pm", "2pm", "3pm", "4pm", "5pm", "6pm", "7pm", "8pm", "9pm", "10pm", "11pm"
-]
+const row_keys = ["0am", "1am", "2am", "3am", "4am", "5am", "6am", "7am", "8am", "9am", "10am", "11am", "12pm", "1pm", "2pm", "3pm", "4pm", "5pm", "6pm", "7pm", "8pm", "9pm", "10pm", "11pm"]
 
-interface co_ords{
-    row: number;
-    col: number;
-}
+interface co_ords{ row: number; col: number;}
 
 const TasksTable = () => {
     const {isOpen, onOpen, onOpenChange, onClose} = useDisclosure();
@@ -103,7 +80,6 @@ const TasksTable = () => {
 
     useEffect(() => {
         const loadData = async() => {
-            setTasks(tasksEmpty);
             const res: string = await window.gateway.readData();
             const parsed = JSON.parse(res);
             initTasksData(parsed);
@@ -111,11 +87,26 @@ const TasksTable = () => {
 
         loadData();
     }, [])
+
+    useEffect(() => {
+        const scrollCorrectHourIntoView = () => {
+            const hours = new Date().getHours();
+            let select = "";
+            if(hours == 12)select = "12pm";
+            else{
+                const h = hours % 24;
+                select = h.toString() + (hours > 12 && hours !== 24 ? "pm" : "am");
+            }
+            document.getElementById(select)?.scrollIntoView({behavior: "smooth", });
+        }
+
+        scrollCorrectHourIntoView();
+    }, [])
     
     return (
         <>
             <Table hideHeader 
-            aria-label="Example table with client side pagination"
+            aria-label="Tasks table"
             classNames={{wrapper: "min-h-[222px] rounded-[35px] w-full",}}>
                 <TableHeader>
                     {columns.map((column) =>
@@ -124,7 +115,7 @@ const TasksTable = () => {
                 </TableHeader>
                 <TableBody>
                     {row_keys.map((key_value, index) => 
-                        <TableRow key={key_value}>
+                        <TableRow key={key_value} id={key_value}>
                             {
                                 columns_num.map((column_value) => 
                                         <TableCell key={calculateCellIndex(index, column_value)}>

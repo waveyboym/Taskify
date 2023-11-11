@@ -1,8 +1,11 @@
 import { useEffect } from "react";
 import { WindowsMinimizeIcon, WindowsRestoreIcon, WindowsMaximizeIcon, WindowsCloseIcon } from "../icons"
 import { getJSONDate } from "../content";
+//import { useTaskStore } from "../store";
 
 const WindowHeader = () => {
+    //const { tasks } = useTaskStore((state) => { return { tasks: state.tasks, }; });
+
     useEffect(() => {
         const minimizeID: HTMLElement | null = document.querySelector('.minimize-app-button');
         const maximizeID: HTMLElement | null = document.querySelector('.maximize-app-button');
