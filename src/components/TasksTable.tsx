@@ -17,7 +17,7 @@ interface co_ords{ row: number; col: number;}
 const TasksTable = () => {
     const {isOpen, onOpen, onOpenChange, onClose} = useDisclosure();
     const [editingTask, setEditingTask] = useState<taskType>({ status: TASKTYPE.null, text: "", time: getJSONDate(0), send_notification: false});
-    const { tasks, overwriteTask, setTasks } = useTaskStore((state) => { return { tasks: state.tasks, overwriteTask: state.overwriteTask, setTasks: state.setTasks }; });
+    const { tasks, overwriteTask, setTasks } = useTaskStore();
     const [coords, setCoords] = useState<co_ords>({row: 0, col: 0});
     
     function calculateCellIndex(row_index: number, cell_index: number){return ((row_index * 4) + cell_index);}
@@ -78,29 +78,31 @@ const TasksTable = () => {
         }
     }
 
+    function scrollCorrectHourIntoView(){
+        const hours = new Date().getHours();
+        let select = "";
+        if(hours == 12)select = "12pm";
+        else{
+            const h = hours % 12;
+            select = h.toString() + (hours > 12 && hours !== 24 ? "pm" : "am");
+        }
+        document.getElementById(select)?.scrollIntoView({behavior: "smooth", });
+    }
+
     useEffect(() => {
-        const loadData = async() => {
-            const res: string = await window.gateway.readData();
-            const parsed = JSON.parse(res);
-            initTasksData(parsed);
+        const loadData = () => {
+            window.gateway.readData().
+            then((res) => {
+                const parsed = JSON.parse(res);
+                initTasksData(parsed);
+                scrollCorrectHourIntoView();
+            }).
+            catch((error) => {
+                console.log(error);
+            });
         }
 
         loadData();
-    }, [])
-
-    useEffect(() => {
-        const scrollCorrectHourIntoView = () => {
-            const hours = new Date().getHours();
-            let select = "";
-            if(hours == 12)select = "12pm";
-            else{
-                const h = hours % 24;
-                select = h.toString() + (hours > 12 && hours !== 24 ? "pm" : "am");
-            }
-            document.getElementById(select)?.scrollIntoView({behavior: "smooth", });
-        }
-
-        scrollCorrectHourIntoView();
     }, [])
     
     return (

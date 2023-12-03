@@ -1,10 +1,9 @@
 import { useEffect } from "react";
 import { WindowsMinimizeIcon, WindowsRestoreIcon, WindowsMaximizeIcon, WindowsCloseIcon } from "../icons"
 import { getJSONDate } from "../content";
-//import { useTaskStore } from "../store";
+import { useTaskStore } from "../store";
 
 const WindowHeader = () => {
-    //const { tasks } = useTaskStore((state) => { return { tasks: state.tasks, }; });
 
     useEffect(() => {
         const minimizeID: HTMLElement | null = document.querySelector('.minimize-app-button');
@@ -34,11 +33,9 @@ const WindowHeader = () => {
         const maximize = () => {window.gateway.maximizeWindow();}
         const restore = () => {window.gateway.restoreWindow();}
         const close = () => {
-            const string_tasks = localStorage.getItem('tasks-store');
-            const tasks = JSON.parse(string_tasks !== null ? string_tasks : "");
             const json = {
                 last_date_edited: getJSONDate(0),
-                store: tasks.state.tasks
+                store: useTaskStore.getState().tasks
             };
             window.gateway.saveData(JSON.stringify(json));
             window.gateway.closeWindow();

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { UbuntuMinimize, UbuntuMaximize, UbuntuClose } from "../icons";
 import { getJSONDate } from "../content";
+import { useTaskStore } from "../store";
 
 const UbuntuHeader = () => {
     const [isMaximizedUbuntu, setisMaximizedUbuntu] = useState<boolean>(false);
@@ -12,11 +13,9 @@ const UbuntuHeader = () => {
     
         const minimize = () => {window.gateway.minimizeWindow();}
         const close = () => {
-            const string_tasks = localStorage.getItem('tasks-store');
-            const tasks = JSON.parse(string_tasks !== null ? string_tasks : "");
             const json = {
                 last_date_edited: getJSONDate(0),
-                store: tasks.state.tasks
+                store: useTaskStore.getState().tasks
             };
             window.gateway.saveData(JSON.stringify(json));
             window.gateway.closeWindow();
